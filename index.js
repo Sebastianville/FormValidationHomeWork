@@ -195,3 +195,55 @@ registration.addEventListener("submit", function (e) {
         errorDisplay.style.color = "green";
     }
 });
+
+//!part 4
+const loginForm = document.getElementById('login')
+const loginUsername = loginForm.elements['username']
+const loginPassword = loginForm.elements['password']
+const keepLoggedIn = loginForm.elements['persist']
+
+loginForm.addEventListener('submit', function (e) {
+    e.preventDefault()
+
+    //cache the input that is being input in the login and compare it to the local storage
+    const currentUsername = loginUsername.value.trim().toLowerCase()
+    const currentPassword = loginPassword.value.trim()
+    let errorMessage = "";
+
+    //Retrieve the users from the LocalStorage
+    let users = JSON.parse(localStorage.getItem("users")) 
+
+    //!compare all the users in the localstorage and cache it so we can use it for validation 
+    let user = users.find(user => user.username === currentUsername)
+
+    //if the user does not submit a username
+    if (!currentUsername) {
+        errorMessage = 'Enter a username'
+        loginUsername.focus()
+    } //if the user does not exist 
+    else if (!user) {
+        errorMessage = "This username does not exist. Please register first.";
+        loginUsername.focus();
+    } //if the user does not submit a password
+    else if (!enteredPassword) {
+        errorMessage = "The Password cannot be blank.";
+        loginPassword.focus();
+    } //in case the password does match in the local storage 
+    else if (user.password !== enteredPassword) {
+        errorMessage = "Incorrect password. Please try again.";
+        loginPassword.focus();
+    }
+
+    if (errorMessage) {
+        errorDisplay.innerText = errorMessage;
+        errorDisplay.style.display = "block";
+        errorDisplay.style.color = "red";
+    } else {
+        // Clear form fields
+        loginForm.reset();
+        errorDisplay.innerText = "Login successful!!";
+        errorDisplay.style.display = "block";
+        errorDisplay.style.color = "green";
+    }
+})
+
